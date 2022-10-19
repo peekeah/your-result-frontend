@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Box, Button, styled, TextField, Typography } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Alert, Box, Button, Snackbar, styled, TextField, Typography } from "@mui/material";
 import * as yup from "yup";
 import { Formik, Form } from "formik";
 import axios from "axios";
@@ -9,6 +9,9 @@ function LoginForm({toggleLoginForm}) {
 
     const URL = process.env.REACT_APP_BACKEND_API;
     const {toggleAuth} = useContext(UserContext);
+
+    const [openSnackBar, setOpenSnackBar] = useState(false);
+
     const schema = yup.object().shape({
         email: yup.string().required("Email is Required").email(),
         password: yup
@@ -39,12 +42,13 @@ function LoginForm({toggleLoginForm}) {
             
         } catch (err) {
             console.log(err);
+            setOpenSnackBar(true);
         }
         resetForm();
 
     };
 
-    return (
+    return (<>
         <Formik
         initialValues={initialValues}
         validationSchema={schema}
@@ -97,6 +101,11 @@ function LoginForm({toggleLoginForm}) {
         </Form>
         )}
         </Formik>
+        <Snackbar open={openSnackBar} autoHideDuration={5000} onClose={() => setOpenSnackBar(false)}>
+            <Alert onClose={() => setOpenSnackBar(false)} severity="error">Invalid Credintials
+            </Alert>
+        </Snackbar>
+        </>
     );
 }
 
