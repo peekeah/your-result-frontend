@@ -4,21 +4,25 @@ import * as yup from "yup";
 import { Formik, Form } from "formik";
 import axios from "axios";
 
-function LoginForm({toggleLogin}) {
-
+export const SignupForm = ({toggleLogin}) => {
     const URL = process.env.REACT_APP_BACKEND_API;
 
     const schema = yup.object().shape({
+        name: yup.string().required("Name is Required"),
         email: yup.string().required("Email is Required").email(),
         password: yup
         .string()
         .min(8, "Password is too short - should be 8 chars minimum.")
         .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+        cnfPassword: yup.string().required('Please re-enter your password')
+        .oneOf([yup.ref('password'), null], 'Passwords does not match')
     });
 
     const initialValues = {
+        name:"",
         email: "",
         password: "",
+        cnfPassword: ""
     };
 
     const StyledBox = styled(Box)({
@@ -32,7 +36,7 @@ function LoginForm({toggleLogin}) {
 
     const handleSubmit = async(values, {resetForm}) => {
         try {
-            const res = await axios.post(`${URL}/users/login`, values);
+            const res = await axios.post(`${URL}/users/signup`, values);
             localStorage.setItem('token', JSON.stringify(res.data));
         } catch (err) {
             console.log(err);
@@ -40,7 +44,6 @@ function LoginForm({toggleLogin}) {
         resetForm();
 
     };
-
     return (
         <Formik
         initialValues={initialValues}
@@ -58,11 +61,22 @@ function LoginForm({toggleLogin}) {
             /* and other goodies */
         }) => (
             <Form>
-            <Box sx={{ mt: "8%" }}>
+            <Box sx={{ mt: "6%" }}>
             <StyledBox>
                 <Typography variant="h3" mx="auto">
-                Login
+                Sign Up
                 </Typography>
+                <TextField
+                    label="Name"
+                    variant="outlined"
+                    type="name"
+                    value={values.name}
+                    name="name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={Boolean(touched.name && errors.name)}
+                    helperText={touched.name && errors.name}
+                />
                 <TextField
                     label="Email"
                     variant="outlined"
@@ -85,16 +99,27 @@ function LoginForm({toggleLogin}) {
                     error={Boolean(touched.password && errors.password)}
                     helperText={touched.password && errors.password}
                 />
-                <Typography variant="body1">Not a user? <span style={{cursor: 'pointer', color: 'blue'}} onClick={() => toggleLogin(false)} >Create new account</span></Typography>
+                
+                <TextField
+                    label="Confirm Password"
+                    variant="outlined"
+                    type="password"
+                    value={values.cnfPassword}
+                    name="cnfPassword"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={Boolean(touched.cnfPassword && errors.cnfPassword)}
+                    helperText={touched.cnfPassword && errors.cnfPassword}
+                />
+
+                <Typography variant="body1">Already user? <span style={{cursor: 'pointer', color: 'blue'}} onClick={() => toggleLogin(true)} >Login</span></Typography>
                 <Button variant="contained" color="secondary" type="submit">
-                Login
+                Sign Up
                 </Button>
             </StyledBox>
             </Box>
         </Form>
         )}
         </Formik>
-    );
+    )
 }
-
-export default LoginForm;
