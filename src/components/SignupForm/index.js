@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Button, styled, TextField, Typography } from "@mui/material";
 import * as yup from "yup";
 import { Formik, Form } from "formik";
 import axios from "axios";
+import UserContext from "../../context/UserContext";
 
-export const SignupForm = ({toggleLogin}) => {
+export const SignupForm = ({toggleLoginForm}) => {
     const URL = process.env.REACT_APP_BACKEND_API;
+
+    const {toggleAuth} = useContext(UserContext);
 
     const schema = yup.object().shape({
         name: yup.string().required("Name is Required"),
         email: yup.string().required("Email is Required").email(),
         password: yup
-        .string()
+        .string().required("Password is Required")
         .min(8, "Password is too short - should be 8 chars minimum.")
         .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
         cnfPassword: yup.string().required('Please re-enter your password')
@@ -38,6 +41,7 @@ export const SignupForm = ({toggleLogin}) => {
         try {
             const res = await axios.post(`${URL}/users/signup`, values);
             localStorage.setItem('token', JSON.stringify(res.data));
+            toggleAuth();
         } catch (err) {
             console.log(err);
         }
@@ -112,7 +116,7 @@ export const SignupForm = ({toggleLogin}) => {
                     helperText={touched.cnfPassword && errors.cnfPassword}
                 />
 
-                <Typography variant="body1">Already user? <span style={{cursor: 'pointer', color: 'blue'}} onClick={() => toggleLogin(true)} >Login</span></Typography>
+                <Typography variant="body1">Already user? <span style={{cursor: 'pointer', color: 'blue'}} onClick={() => toggleLoginForm(true)} >Login</span></Typography>
                 <Button variant="contained" color="secondary" type="submit">
                 Sign Up
                 </Button>
