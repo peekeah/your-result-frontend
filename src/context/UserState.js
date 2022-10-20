@@ -3,6 +3,7 @@ import UserContext from "./UserContext";
 import axios from "axios";
 export const UserState = (props) => {
     // getting auth status using token
+    const token = JSON.parse(localStorage.getItem("token")) || "";
     const [auth, setAuth] = useState( localStorage.getItem("token") ? true : false);
     const [studentList, setStudentList] = useState([]);
 
@@ -24,7 +25,6 @@ export const UserState = (props) => {
                     "access-token": token,
                 },
             });
-            // setData(res.data);
             if (res.data) {
                 setStudentList(res.data);
             } else {
@@ -32,9 +32,8 @@ export const UserState = (props) => {
                 localStorage.removeItem("token");
             }
         } catch (error) {
-            toggleAuth();
             console.log(error);
-            localStorage.removeItem("token");
+            logoutUser();
         }
     }
 
@@ -49,7 +48,7 @@ export const UserState = (props) => {
 
 
     return (
-        <UserContext.Provider value={{ auth, toggleAuth, studentList, getStudentList }}>
+        <UserContext.Provider value={{ auth, toggleAuth, studentList, getStudentList, token, logoutUser }}>
             {props.children}
         </UserContext.Provider>
     );

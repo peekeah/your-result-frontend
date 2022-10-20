@@ -10,8 +10,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import axios from "axios";
-// import AddEntry from "./AddEntry";
+import AddEntry from "./AddEntry";
 import Actions from "./Actions";
 import ResultModal from "./ResultModal";
 import UserContext from "../../context/UserContext";
@@ -19,27 +18,22 @@ import UserContext from "../../context/UserContext";
 function AdminDashboard() {
   const { getStudentList, studentList } = useContext(UserContext);
   const [openModal, setOpenModal] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const [counter, setCounter] = useState(0);
-
   useEffect(() => {
-    getStudentList()
+    getStudentList();
   }, []);
-
 
   const closeModal = () => {
     setOpenModal(false);
-  }
-
-
-
+  };
 
   return (
     <>
       <Box my={10} mx={15}>
         <Box my={3}>
-          <Button variant="contained">
+          <Button variant="contained" onClick={() => setOpenAddModal(true)}>
             Add Entry
           </Button>
         </Box>
@@ -67,8 +61,6 @@ function AdminDashboard() {
                   <TableCell align="center">
                     <Actions
                       id={row._id}
-                      counter={counter}
-                      setCounter={setCounter}
                       setSelectedItem={setSelectedItem}
                       setOpenModal={setOpenModal}
                       item={row}
@@ -80,12 +72,11 @@ function AdminDashboard() {
           </Table>
         </TableContainer>
       </Box>
-      {/* {
-        openModal ? <AddEntry setOpenModal={setOpenModal}/> : null
-      } */}
       {openModal ? (
         <ResultModal closeModal={closeModal} selectedItem={selectedItem} />
       ) : null}
+
+      {openAddModal ? <AddEntry setOpenAddModal={setOpenAddModal} /> : null}
     </>
   );
 }

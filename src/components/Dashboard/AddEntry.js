@@ -10,15 +10,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import * as yup from "yup";
 import { Formik, Form } from "formik";
+import UserContext from "../../context/UserContext";
 
-
-//#BUG: Add entry is throwing an error, 
-function AddEntry({ setOpenModal }) {
+//#BUG: Add entry is throwing an error,
+function AddEntry({ setOpenAddModal }) {
   const URL = process.env.REACT_APP_BACKEND_API;
+  const { token, logoutUser}  = useContext(UserContext);
+  const [studentList, setStudentList] = useState([]);
 
   const style = {
     position: "absolute",
@@ -32,11 +34,8 @@ function AddEntry({ setOpenModal }) {
     p: 4,
   };
 
-  const [selectedStudent, setSelectedStudent] = useState("");
-  const [students, setStudents] = useState([]);
-
   let initialValues = {
-    // name: "",
+    name: "",
     subject: "",
     marks: "",
   };
@@ -44,131 +43,116 @@ function AddEntry({ setOpenModal }) {
   const schema = yup.object().shape({
     name: yup.string().required("Name is Required"),
     subject: yup.string().required("Subject is Required"),
-    marks: yup.number().required("Marks are Required"),
+    marks: yup.number().typeError("Marks must be a number").required("Marks are Required"),
   });
 
-  //   const [formData, setFormData] = useState({
-  //       name: "",
-  //       subject: "",
-  //       marks:""
-  //   })
 
+  const getData = async() => {
+    
+    try {
+      const res = await axios.get(`${URL}/users/users-list`, {
+        headers: {
+          "access-token": token
+        }
+      });
+      setStudentList(res.data);
+      initialValues.name = res.data[0];
+    } catch(err) {
+      console.log(err);
+      logoutUser();
+    }
+  }
+  
   useEffect(() => {
-    getStudents();
-  }, []);
-
-  const getStudents = async () => {
-    const token = JSON.parse(localStorage.getItem("token")) || "";
-    const res = await axios.get(`${URL}/users/users-list`, {
-      headers: {
-        "access-token": token,
-      },
-    });
-
-    const data = res.data;
-    setStudents(data);
-    // initialValues['name'] = data[0];
-    // console.log(data)
-
-    // setFormData((prev) => ({
-    //     ...prev,
-    //     ['name']: res.data[0]
-    // }))
-  };
-
-  // const handleChange = (e) => {
-  //     // setSelectedStudent(e.target.value);
-  //     const {name, value} = e.target;
-  //     setFormData((prev) => ({
-  //         ...prev,
-  //         [name]: value
-  //     }))
-  // };
-
+    getData();
+  },[])
+  
   const handleSubmit = async () => {
-    // e.preventDefault();
-    // console.log(formData)
     console.log("first");
-    setOpenModal(false);
   };
-
-  //   console.log(initialValues)
 
   return (
     <Modal
       open={true}
-      onClose={() => setOpenModal(false)}
+      onClose={() => setOpenAddModal(false)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Formik
-        initialValues={initialValues}
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-          /* and other goodies */
-        }) => (
-          <Form>
-            <Box sx={style}>
-              <Typography
-                mb={3}
-                id="modal-modal-title"
-                variant="h5"
-                component="h2"
-              >
-                Add Entry
-              </Typography>
-              <Stack spacing={3}>
-                {/* <FormControl fullWidth>
+      <Box style={style}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={schema}
+          onSubmit={handleSubmit}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            /* and other goodies */
+          }) => (
+            <Form>
+              <Box sx={style}>
+                <Typography
+                  mb={3}
+                  id="modal-modal-title"
+                  variant="h5"
+                  component="h2"
+                >
+                  Add Entry
+                </Typography>
+                <Stack spacing={3}>
+                <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">Name</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={values.name}
-                    label="Name"
                     name="name"
+                    label="Name"
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    
                   >
-                    {students.map((s, id) => (
-                      <MenuItem key={id} value={s}>
-                        {s}
-                      </MenuItem>
-                    ))}
+                  {
+                    studentList.map((s, id) => 
+                    <MenuItem key={id} value={s}>{s}</MenuItem>
+                    )
+                  }
                   </Select>
-                </FormControl> */}
-                <TextField
-                  label="Subject"
-                  variant="outlined"
-                  name="subject"
-                  value={values.subject}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                <TextField
-                  label="Marks"
-                  variant="outlined"
-                  name="marks"
-                  value={values.marks}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                <Button variant="contained" type="submit">
-                  Submit
-                </Button>
-              </Stack>
-            </Box>
-          </Form>
-        )}
-      </Formik>
+                </FormControl>
+                  <TextField
+                    label="Subject"
+                    variant="outlined"
+                    name="subject"
+                    value={values.subject}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={Boolean(touched.subject && errors.subject)}
+                    helperText={touched.subject && errors.subject}
+                  />
+                  <TextField
+                    label="Marks"
+                    variant="outlined"
+                    name="marks"
+                    value={values.marks}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={Boolean(touched.marks && errors.marks)}
+                    helperText={touched.marks && errors.marks}
+                  />
+                  <Button variant="contained" type="submit">
+                    Submit
+                  </Button>
+                </Stack>
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      </Box>
     </Modal>
   );
 }

@@ -12,7 +12,7 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import UserContext from "../../context/UserContext";
 
-const ResultModal = ({ closeModal, selectedItem }) => {
+const ResultModal = ({ closeModal, selectedItem, setSelectedItem }) => {
   const style = {
     position: "absolute",
     top: "42%",
@@ -33,7 +33,7 @@ const ResultModal = ({ closeModal, selectedItem }) => {
   const schema = yup.object().shape({
     name: yup.string().required("Name is Required"),
     subject: yup.string().required("Subject is Required"),
-    marks: yup.number().required("Marks are Required"),
+    marks: yup.number().typeError("Marks must be a number").required("Marks are Required"),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -55,6 +55,7 @@ const ResultModal = ({ closeModal, selectedItem }) => {
         console.log(err);
         logoutUser();
     }
+    setSelectedItem(null);
   };
 
   return (
@@ -98,6 +99,8 @@ const ResultModal = ({ closeModal, selectedItem }) => {
                     value={values.subject}
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    error={Boolean(touched.subject && errors.subject)}
+                    helperText={touched.subject && errors.subject}
                   />
                   <TextField
                     variant="outlined"
@@ -106,6 +109,8 @@ const ResultModal = ({ closeModal, selectedItem }) => {
                     value={values.marks}
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    error={Boolean(touched.marks && errors.marks)}
+                    helperText={touched.marks && errors.marks}
                   />
                   <Button variant="contained" type="submit">
                     Submit
