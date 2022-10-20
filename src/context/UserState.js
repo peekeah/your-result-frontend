@@ -3,6 +3,7 @@ import UserContext from "./UserContext";
 import axios from "axios";
 export const UserState = (props) => {
     // getting auth status using token
+    const URL = process.env.REACT_APP_BACKEND_API;
     const token = JSON.parse(localStorage.getItem("token")) || "";
     const [auth, setAuth] = useState( localStorage.getItem("token") ? true : false);
     const [studentList, setStudentList] = useState([]);
@@ -18,8 +19,6 @@ export const UserState = (props) => {
     // function to get Students list
     const getStudentList = async() => {
         try {
-            const URL = process.env.REACT_APP_BACKEND_API;
-            const token = JSON.parse(localStorage.getItem("token")) || "";
             const res = await axios.get(`${URL}/result/display-entries`, {
                 headers: {
                     "access-token": token,
@@ -37,14 +36,14 @@ export const UserState = (props) => {
         }
     }
 
+
     const logoutUser = () => {
         setAuth(false);
-        const token = localStorage.getItem("token");
-        if(token) {
+        const existToken = localStorage.getItem("token");
+        if(existToken) {
             localStorage.removeItem("token");
         }
     }
-
 
 
     return (

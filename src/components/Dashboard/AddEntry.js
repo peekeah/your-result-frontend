@@ -19,8 +19,10 @@ import UserContext from "../../context/UserContext";
 //#BUG: Add entry is throwing an error,
 function AddEntry({ setOpenAddModal }) {
   const URL = process.env.REACT_APP_BACKEND_API;
-  const { token, logoutUser}  = useContext(UserContext);
+  const { token, logoutUser }  = useContext(UserContext);
   const [studentList, setStudentList] = useState([]);
+  
+  
 
   const style = {
     position: "absolute",
@@ -70,6 +72,8 @@ function AddEntry({ setOpenAddModal }) {
   const handleSubmit = async () => {
     console.log("first");
   };
+
+  console.log()
 
   return (
     <Modal
