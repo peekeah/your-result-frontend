@@ -37,7 +37,6 @@ const ResultModal = ({ closeModal, selectedItem, setSelectedItem }) => {
   });
 
   const handleSubmit = async (values, { resetForm }) => {
-    console.log(values);
     try {
       const token = JSON.parse(localStorage.getItem("token")) || "";
         const res = await axios.patch(`${URL}/result/update/${_id}`, values, {

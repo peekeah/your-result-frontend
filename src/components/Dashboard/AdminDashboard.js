@@ -73,7 +73,7 @@ function AdminDashboard() {
         </TableContainer>
       </Box>
       {openModal ? (
-        <ResultModal closeModal={closeModal} selectedItem={selectedItem} />
+        <ResultModal closeModal={closeModal} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
       ) : null}
 
       {openAddModal ? <AddEntry setOpenAddModal={setOpenAddModal} /> : null}

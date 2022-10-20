@@ -3,10 +3,9 @@ import { Delete, Edit } from "@mui/icons-material";
 
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import ResultModal from "./ResultModal";
 import UserContext from "../../context/UserContext";
 
-function Actions({id, counter, setCounter, setSelectedItem, setOpenModal, item}) {
+function Actions({id, setOpenModal, item, setSelectedItem}) {
 
     const URL = process.env.REACT_APP_BACKEND_API;
     const token = JSON.parse(localStorage.getItem('token')) || "";

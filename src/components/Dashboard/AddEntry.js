@@ -19,7 +19,7 @@ import UserContext from "../../context/UserContext";
 //#BUG: Add entry is throwing an error,
 function AddEntry({ setOpenAddModal }) {
   const URL = process.env.REACT_APP_BACKEND_API;
-  const { token, logoutUser }  = useContext(UserContext);
+  const { token, logoutUser, getStudentList }  = useContext(UserContext);
   const [studentList, setStudentList] = useState([]);
   
   
@@ -69,8 +69,21 @@ function AddEntry({ setOpenAddModal }) {
     getData();
   },[])
   
-  const handleSubmit = async () => {
+  const handleSubmit = async (values) => {
     console.log("first");
+    try {
+      const res = await axios.post(`${URL}/result/create`, values, {
+        headers: {
+          "access-token": token
+        }
+      });
+      console.log(res);
+      getStudentList();
+    } catch (err) {
+      console.log(err);
+      // logoutUser()
+    }
+    setOpenAddModal(false);
   };
 
   console.log()
