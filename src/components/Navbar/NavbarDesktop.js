@@ -14,18 +14,22 @@ const NavbarDesktop = () => {
     return (
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-            <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Box >
+            <Toolbar style={{maxWidth: '1024px', margin:"auto", display: 'flex', justifyContent: 'space-between'}}>
+            <Typography variant="h6" component="div" style={{flexGrow: 1, fontFamily: 'Courgette', cursor: 'pointer', fontSize: '1.5rem'}}>
                 Tailweb
             </Typography>
-            <Button
-                color="inherit"
-                sx={{ display: auth ? "block" : "none" }}
-                onClick={toggleAuth}
-            >
-                Logout
-            </Button>
+            <Box>
+                <Button
+                    color="inherit"
+                    sx={{ display: auth ? "block" : "none" }}
+                    onClick={toggleAuth}
+                >
+                    Logout
+                </Button>
+            </Box>
             </Toolbar>
+            </Box>
         </AppBar>
         </Box>
     );

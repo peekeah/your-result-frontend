@@ -12,8 +12,9 @@ import {
 } from "@mui/material";
 import AddEntry from "./AddEntry";
 import Actions from "./Actions";
-import ResultModal from "./ResultModal";
 import UserContext from "../../context/UserContext";
+import FilterData from "./FilterData";
+import EditEntry from "./EditEntry";
 
 function AdminDashboard() {
   const { getStudentList, studentList } = useContext(UserContext);
@@ -33,10 +34,13 @@ function AdminDashboard() {
     <>
       <Box my={10} mx={15}>
         <Box my={3}>
-          <Button variant="contained" onClick={() => setOpenAddModal(true)}>
-            Add Entry
-          </Button>
+          <Box sx={{display: 'flex', justifyContent: 'center'}} >
+            <Button variant="contained" onClick={() => setOpenAddModal(true)}>
+              Add Entry
+            </Button>
+          </Box>
         </Box>
+        <Box my={3}><FilterData /></Box>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -73,7 +77,11 @@ function AdminDashboard() {
         </TableContainer>
       </Box>
       {openModal ? (
-        <ResultModal closeModal={closeModal} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+        <EditEntry
+          closeModal={closeModal}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+        />
       ) : null}
 
       {openAddModal ? <AddEntry setOpenAddModal={setOpenAddModal} /> : null}

@@ -16,10 +16,9 @@ import * as yup from "yup";
 import { Formik, Form } from "formik";
 import UserContext from "../../context/UserContext";
 
-//#BUG: Add entry is throwing an error,
 function AddEntry({ setOpenAddModal }) {
   const URL = process.env.REACT_APP_BACKEND_API;
-  const { token, logoutUser, getStudentList }  = useContext(UserContext);
+  const { token, logoutUser, getStudentList, students, subjects }  = useContext(UserContext);
   const [studentList, setStudentList] = useState([]);
   
   
@@ -31,7 +30,8 @@ function AddEntry({ setOpenAddModal }) {
     transform: "translate(-50%, -50%)",
     width: 400,
     bgcolor: "background.paper",
-    border: "2px solid #000",
+    border: "1px solid #000",
+    borderRadius: "0.5rem",
     boxShadow: 24,
     p: 4,
   };
@@ -49,28 +49,12 @@ function AddEntry({ setOpenAddModal }) {
   });
 
 
-  const getData = async() => {
-    
-    try {
-      const res = await axios.get(`${URL}/users/users-list`, {
-        headers: {
-          "access-token": token
-        }
-      });
-      setStudentList(res.data);
-      initialValues.name = res.data[0];
-    } catch(err) {
-      console.log(err);
-      logoutUser();
-    }
-  }
-  
   useEffect(() => {
-    getData();
+    initialValues.name = students[0];
+    initialValues.subject = subjects[0];
   },[])
   
   const handleSubmit = async (values) => {
-    console.log("first");
     try {
       const res = await axios.post(`${URL}/result/create`, values, {
         headers: {
@@ -81,12 +65,11 @@ function AddEntry({ setOpenAddModal }) {
       getStudentList();
     } catch (err) {
       console.log(err);
-      // logoutUser()
+      logoutUser()
     }
     setOpenAddModal(false);
   };
 
-  console.log()
 
   return (
     <Modal
@@ -118,6 +101,7 @@ function AddEntry({ setOpenAddModal }) {
                   id="modal-modal-title"
                   variant="h5"
                   component="h2"
+                    align="center"
                 >
                   Add Entry
                 </Typography>
@@ -135,22 +119,31 @@ function AddEntry({ setOpenAddModal }) {
                     
                   >
                   {
-                    studentList.map((s, id) => 
+                    students.map((s, id) => 
                     <MenuItem key={id} value={s}>{s}</MenuItem>
                     )
                   }
                   </Select>
                 </FormControl>
-                  <TextField
-                    label="Subject"
-                    variant="outlined"
-                    name="subject"
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Subject</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
                     value={values.subject}
+                    name="subject"
+                    label="Subject"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    error={Boolean(touched.subject && errors.subject)}
-                    helperText={touched.subject && errors.subject}
-                  />
+                    
+                  >
+                  {
+                    subjects.map((s, id) => 
+                    <MenuItem key={id} value={s}>{s}</MenuItem>
+                    )
+                  }
+                  </Select>
+                </FormControl>
                   <TextField
                     label="Marks"
                     variant="outlined"
