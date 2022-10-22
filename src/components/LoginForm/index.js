@@ -9,7 +9,6 @@ function LoginForm({toggleLoginForm}) {
 
     const URL = process.env.REACT_APP_BACKEND_API;
     const {toggleAuth} = useContext(UserContext);
-
     const [openSnackBar, setOpenSnackBar] = useState(false);
 
     const schema = yup.object().shape({
@@ -25,14 +24,23 @@ function LoginForm({toggleLoginForm}) {
         password: "",
     };
 
-    const StyledBox = styled(Box)({
+    const StyledBox = styled(Box)(({theme})=>({
         display: "flex",
         gap: 25,
         flexDirection: "column",
         justifyContent: "center",
         margin: "auto",
-        width: "30%",
-    });
+        width: "80%",
+        [theme.breakpoints.up('sm')]: {
+            width: "50%",
+        },
+        [theme.breakpoints.up('md')]: {
+            width: "50%",
+        },
+        [theme.breakpoints.up('lg')]: {
+            width: "30%",
+        }
+    }));
 
     const handleSubmit = async(values, {resetForm}) => {
         try {

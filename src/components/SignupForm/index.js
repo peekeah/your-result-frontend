@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Box, Button, styled, TextField, Typography } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Alert, Box, Button, Snackbar, styled, TextField, Typography } from "@mui/material";
 import * as yup from "yup";
 import { Formik, Form } from "formik";
 import axios from "axios";
@@ -7,8 +7,8 @@ import UserContext from "../../context/UserContext";
 
 export const SignupForm = ({toggleLoginForm}) => {
     const URL = process.env.REACT_APP_BACKEND_API;
-
     const {toggleAuth} = useContext(UserContext);
+    const [openSnackBar, setOpenSnackBar] = useState(false);
 
     const schema = yup.object().shape({
         name: yup.string().required("Name is Required"),
@@ -28,14 +28,23 @@ export const SignupForm = ({toggleLoginForm}) => {
         cnfPassword: ""
     };
 
-    const StyledBox = styled(Box)({
+    const StyledBox = styled(Box)(({theme})=> ({
         display: "flex",
         gap: 25,
         flexDirection: "column",
         justifyContent: "center",
         margin: "auto",
-        width: "30%",
-    });
+        width: "80%",
+        [theme.breakpoints.up('sm')]: {
+            width: "50%",
+        },
+        [theme.breakpoints.up('md')]: {
+            width: "50%",
+        },
+        [theme.breakpoints.up('lg')]: {
+            width: "30%",
+        }
+    }));
 
     const handleSubmit = async(values, {resetForm}) => {
         try {
@@ -44,11 +53,13 @@ export const SignupForm = ({toggleLoginForm}) => {
             toggleAuth();
         } catch (err) {
             console.log(err);
+            setOpenSnackBar(true);
         }
         resetForm();
 
     };
     return (
+        <>
         <Formik
         initialValues={initialValues}
         validationSchema={schema}
@@ -125,5 +136,9 @@ export const SignupForm = ({toggleLoginForm}) => {
         </Form>
         )}
         </Formik>
+        <Snackbar open={openSnackBar} autoHideDuration={5000} onClose={() => setOpenSnackBar(false)}>
+            <Alert onClose={() => setOpenSnackBar(false)} severity="error">User alreday exist</Alert>
+        </Snackbar>
+        </>
     )
 }

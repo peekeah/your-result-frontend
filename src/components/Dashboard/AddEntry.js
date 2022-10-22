@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import axios from "axios";
 import * as yup from "yup";
 import { Formik, Form } from "formik";
@@ -18,8 +18,7 @@ import UserContext from "../../context/UserContext";
 
 function AddEntry({ setOpenAddModal }) {
   const URL = process.env.REACT_APP_BACKEND_API;
-  const { token, logoutUser, getStudentList, students, subjects }  = useContext(UserContext);
-  const [studentList, setStudentList] = useState([]);
+  const { token, logoutUser, getResult, students, subjects }  = useContext(UserContext);
   
   
 
@@ -55,14 +54,15 @@ function AddEntry({ setOpenAddModal }) {
   },[])
   
   const handleSubmit = async (values) => {
+    values.marks =  parseInt(values.marks);
+
     try {
       const res = await axios.post(`${URL}/result/create`, values, {
         headers: {
           "access-token": token
         }
       });
-      console.log(res);
-      getStudentList();
+      getResult();
     } catch (err) {
       console.log(err);
       logoutUser()

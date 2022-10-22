@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import AddEntry from "./AddEntry";
 import Actions from "./Actions";
@@ -32,17 +33,23 @@ function AdminDashboard() {
 
   return (
     <>
-      <Box my={10} mx={15}>
+      <Box my={10} mx={5} sx={{ mx: { xs: 5, sm: 10, md: 15 } }}>
         <Box my={3}>
-          <Box sx={{display: 'flex', justifyContent: 'center'}} >
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button variant="contained" onClick={() => setOpenAddModal(true)}>
               Add Entry
             </Button>
           </Box>
         </Box>
-        <Box my={3}><FilterData /></Box>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Box my={3}>
+          <FilterData />
+        </Box>
+        <Typography variant="h3" align="center" mt={5} mb={3} >Result</Typography>
+        <TableContainer
+          style={{ maxWidth: "1024px", margin: "auto" }}
+          component={Paper}
+        >
+          <Table aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell align="center">Name</TableCell>

@@ -1,13 +1,13 @@
 import { FilterList } from "@mui/icons-material";
 import {
-    Box,
     FormControl,
     IconButton,
     InputLabel,
     MenuItem,
     Select,
+    Stack,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import UserContext from "../../context/UserContext";
 
 function FilterStudent() {
@@ -16,13 +16,14 @@ function FilterStudent() {
     const handleChange = (e) => {
         setValue(e.target.value);
     };
+    
     const handleSubmit = async () => {
         filterResultByStudent(value);
 
     };
 
     return (
-        <Box>
+        <Stack direction="row" gap={1} >
             <FormControl style={{ minWidth: 120 }}>
                 <InputLabel id="demo-simple-select-label">Student</InputLabel>
                 <Select
@@ -45,7 +46,7 @@ function FilterStudent() {
             <IconButton color="secondary" onClick={handleSubmit}>
                 <FilterList />
             </IconButton>
-        </Box>
+        </Stack>
     );
 }
 

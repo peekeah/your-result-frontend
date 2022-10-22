@@ -5,10 +5,10 @@ import { SignupForm } from "./SignupForm";
 import UserContext from "../context/UserContext";
 import { Dashboard } from "./Dashboard";
 
-export const Home = () => {
+const Home = () => {
   const [loginForm, toggleLoginForm] = useState(true);
   const { auth } = useContext(UserContext);
-  console.log(auth);
+
   return (
     <>
       {!auth ? (
@@ -25,3 +25,5 @@ export const Home = () => {
     </>
   );
 };
+
+export default Home;

@@ -1,10 +1,38 @@
-import React from "react";
-import { Box } from "@mui/material";
-import { useMediaQuery, useTheme } from "@mui/material";
-import NavbarMobile from "./NavbarMobile";
-import NavbarDesktop from "./NavbarDesktop";
-export const Navbar = () => {
-    const theme = useTheme();
-    const isMatched = useMediaQuery(theme.breakpoints.down("md"));
-    return <Box>{isMatched ? <NavbarMobile /> : <NavbarDesktop />}</Box>;
+import React, { useContext } from "react";
+import {
+    Box,
+    AppBar,
+    Button,
+    Typography,
+    Toolbar,
+} from "@mui/material";
+import UserContext from "../../context/UserContext";
+
+const Navbar = () => {
+    const { auth, toggleAuth } = useContext(UserContext);
+
+    return (
+        <Box sx={{ flexGrow: 1}}>
+        <AppBar position="static">
+        <Box >
+            <Toolbar style={{maxWidth: '1024px', margin:"auto", display: 'flex', justifyContent: 'space-between'}}>
+            <Typography variant="h6" component="div" style={{flexGrow: 1, fontFamily: 'Courgette', cursor: 'pointer', fontSize: '1.5rem'}}>
+                Your Result
+            </Typography>
+            <Box>
+                <Button
+                    color="inherit"
+                    sx={{ display: auth ? "block" : "none" }}
+                    onClick={toggleAuth}
+                >
+                    Logout
+                </Button>
+            </Box>
+            </Toolbar>
+            </Box>
+        </AppBar>
+        </Box>
+    );
 };
+
+export default Navbar;

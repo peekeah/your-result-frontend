@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
 
@@ -104,7 +104,7 @@ export const UserState = (props) => {
     }
 
     return (
-        <UserContext.Provider value={{ auth, toggleAuth, result, getResult, token, logoutUser, getSubjects, students, subjects, filterResultByStudent, filterResultBySubject }}>
+        <UserContext.Provider value={{ auth, toggleAuth, result, getResult, token, logoutUser, getSubjects, students, subjects, filterResultByStudent, filterResultBySubject, config }}>
             {props.children}
         </UserContext.Provider>
     );

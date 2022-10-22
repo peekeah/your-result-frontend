@@ -7,15 +7,12 @@ import StudentDashboard from "./StudentDashboard";
 export const Dashboard = () => {
   const [role, setRole] = useState(null);
   const URL = process.env.REACT_APP_BACKEND_API;
-  const { token, logoutUser } = useContext(UserContext);
-  console.log(URL)
+  const { logoutUser, config } = useContext(UserContext);
+
+
   const getData = async () => {
     try {
-      const res = await axios.post(`${URL}/users/is-admin`, {}, {
-        headers: {
-          "access-token": token,
-        },
-      });
+      const res = await axios.post(`${URL}/users/is-admin`, {}, config);
       if (res.data) {
         setRole("admin");
       } else {

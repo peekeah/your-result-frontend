@@ -33,7 +33,7 @@ const EditEntry = ({ closeModal, selectedItem, setSelectedItem }) => {
 
   const { __v, _id, ...initialValues } = selectedItem;
 
-  const { getStudentList, logoutUser, subjects } = useContext(UserContext);
+  const { getResult, logoutUser, subjects } = useContext(UserContext);
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is Required"),
@@ -44,7 +44,7 @@ const EditEntry = ({ closeModal, selectedItem, setSelectedItem }) => {
       .required("Marks are Required"),
   });
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values) => {
     try {
       const token = JSON.parse(localStorage.getItem("token")) || "";
       const res = await axios.patch(`${URL}/result/update/${_id}`, values, {
@@ -53,7 +53,7 @@ const EditEntry = ({ closeModal, selectedItem, setSelectedItem }) => {
         },
       });
       if (res.data) {
-        getStudentList();
+        getResult();
       } else {
         logoutUser();
       }

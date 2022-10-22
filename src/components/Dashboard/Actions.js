@@ -1,7 +1,6 @@
+import React, { useContext } from "react";
 import { Box, IconButton, Stack } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-
-import React, { useContext, useState } from "react";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
 
@@ -9,7 +8,7 @@ function Actions({id, setOpenModal, item, setSelectedItem}) {
 
     const URL = process.env.REACT_APP_BACKEND_API;
     const token = JSON.parse(localStorage.getItem('token')) || "";
-    const { getStudentList} = useContext(UserContext);
+    const { getResult} = useContext(UserContext);
     const handleDelete = async() => {
 
         try {
@@ -18,7 +17,7 @@ function Actions({id, setOpenModal, item, setSelectedItem}) {
                     "access-token": token
                 }
             })
-            getStudentList();
+            getResult();
             
         } catch (error) {
             console.log(error);
