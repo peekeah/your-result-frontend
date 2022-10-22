@@ -17,13 +17,13 @@ import FilterData from "./FilterData";
 import EditEntry from "./EditEntry";
 
 function AdminDashboard() {
-  const { getStudentList, studentList } = useContext(UserContext);
+  const { getResult, result } = useContext(UserContext);
   const [openModal, setOpenModal] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
-    getStudentList();
+    getResult();
   }, []);
 
   const closeModal = () => {
@@ -52,7 +52,7 @@ function AdminDashboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {studentList.map((row) => (
+              {result.map((row) => (
                 <TableRow
                   key={row._id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

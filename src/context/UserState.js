@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
+
 export const UserState = (props) => {
     // getting auth status using token
     const URL = process.env.REACT_APP_BACKEND_API;
@@ -11,9 +12,10 @@ export const UserState = (props) => {
         },
     }
     const [auth, setAuth] = useState( localStorage.getItem("token") ? true : false);
-    const [studentList, setStudentList] = useState([]);
+    const [result, setResult] = useState([]);
     const [students, setStudents] = useState([]);
     const [subjects, setSubjects] = useState([]);
+
     // function to toggle auth
     const toggleAuth = () => {
         if (auth) {
@@ -23,11 +25,11 @@ export const UserState = (props) => {
     };
 
     // function to get Students list
-    const getStudentList = async() => {
+    const getResult = async() => {
         try {
             const res = await axios.get(`${URL}/result/display-entries`, config);
             if (res.data) {
-                setStudentList(res.data);
+                setResult(res.data);
             } else {
                 toggleAuth();
                 localStorage.removeItem("token");
@@ -41,6 +43,7 @@ export const UserState = (props) => {
     }
 
 
+    // Function to delte logout use and delete token from localstorage
     const logoutUser = () => {
         setAuth(false);
         const existToken = localStorage.getItem("token");
@@ -49,16 +52,17 @@ export const UserState = (props) => {
         }
     }
 
+    // Function to get all subjects
     const getSubjects = async() => {
         try {
-            const response = await axios.get(`${URL}/subjects`, config);
-            setSubjects(response.data);
+            const res = await axios.get(`${URL}/subjects`, config);
+            setSubjects(res.data);
         } catch(error) {
             logoutUser();
         }
-
     }
-
+    
+    // Function to get all Students
     const getStudents = async() => {
         try {
             const res = await axios.get(`${URL}/users/users-list`, config);
@@ -69,11 +73,38 @@ export const UserState = (props) => {
         }
     }
 
+    // Filter result by student
+    const filterResultByStudent = async(value) => {
+        if(value !== 'All') {
+            try {
+                const response = await axios.post(`${URL}/result/filter-result-by-student`, {name: value}, config);
+                setResult(response.data);
+                
+            } catch(error) {
+                logoutUser();
+            }
+        } else {
+            getResult();
+        }
+    }
 
-
+    // Filter result by subject
+    const filterResultBySubject = async(value) => {
+        if(value !== 'All')  {
+            try {
+                const response = await axios.post(`${URL}/result/filter-result-by-subject`, {subject: value}, config);
+                setResult(response.data);
+                
+            } catch(error) {
+                logoutUser();
+            }  
+        } else {
+            getResult();
+        }
+    }
 
     return (
-        <UserContext.Provider value={{ auth, toggleAuth, studentList, getStudentList, token, logoutUser, getSubjects, students, subjects }}>
+        <UserContext.Provider value={{ auth, toggleAuth, result, getResult, token, logoutUser, getSubjects, students, subjects, filterResultByStudent, filterResultBySubject }}>
             {props.children}
         </UserContext.Provider>
     );
