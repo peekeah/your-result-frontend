@@ -22,7 +22,7 @@ const EditEntry = ({ closeModal, selectedItem, setSelectedItem }) => {
     top: "42%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: 270,
     bgcolor: "background.paper",
     border: "1px solid #000",
     borderRadius: "0.5rem",
